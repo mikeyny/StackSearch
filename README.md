@@ -14,7 +14,7 @@ Start scrit with 2 arguments the search query and tags for the search qeyur
 ```
 $ retweet.py search_query seach_tags
 ```
-![alt text](stackstack.png)
+![alt text](https://github.com/mikeyny/StackSearch/blob/master/stacksearch.png)
 
 
 
