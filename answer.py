@@ -1,30 +1,39 @@
-import json ,requests,sys
+import json ,requests,sys , configparser ,textwrap
 from bs4 import BeautifulSoup
+# variable
+#command line arguments
+intitle = sys.argv[1]
+tags = sys.argv[2]
+#config defaults
+config = configparser.SafeConfigParser()
+config.read("config.txt")
+site = config.get("settings", "site")
+pagesize = config.get("settings", "number_of_results")
+sort_by = config.get("settings", "sort_by")
+
 #stackexchange url
 url ="https://api.stackexchange.com/2.2/"
-#variables
-intitle = input("Please input your search query \n")
-tags = input("\n Please input tags associated with your query b \n")
+
 #api endpoint
 search_url ="{}search?".format(url)
-search_params ={"pagesize": 5,"order":"desc","sort":"votes","tags":tags, "intitle": intitle,"site":"stackoverflow"}
-#retrieving answers
+search_params ={"pagesize": pagesize,"order":"desc","sort":sort_by,"tags":tags, "intitle": intitle,"site":site}
+#retrieving questions that match the query
 search_response = requests.get(search_url, params=search_params)
 data = search_response.json()
 questions = data["items"]
-print("The following are the top 5 which meet your query \n")
-
+print("The following are the top {} which meet your query \n".format(pagesize))
+#print top results
 i =0
 for question in questions:
 	
 	print("Option" ,i+1 ,question["title"],"       score:",question["score"] ,"       answered ?:",question["is_answered"] ,"\n")
 	i = i + 1
-
-option = int(input("\n please choose an option you prefer"))
-if option > search_params["pagesize"]:
+#choosing correct question from results
+option = int(input("\nPlease choose an option you prefer \t"))
+if option > int(search_params["pagesize"]):
 	print("invalid option")
 	sys.exit()
-
+#retrieving the answer
 try:
 	answer_url = "{0}/answers/{1}".format(url,questions[option-1]["accepted_answer_id"])
 	answer_params = {"order":"desc","sort":"votes", "site":"stackoverflow","filter":"withbody"}
@@ -39,12 +48,13 @@ except Exception :
 	answer_response = requests.get(surl, params=sparams)
 
 finally:
+	#print the answer
 	answer_data = answer_response.json()
 	answer = answer_data["items"]
 	html_doc = answer[0]["body"]
 	soup = BeautifulSoup(html_doc, 'html.parser')
 
-	print(soup.get_text())	
+	print(textwrap.indent(soup.get_text(), '       '))	
 
 
 

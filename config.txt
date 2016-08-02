@@ -1,0 +1,12 @@
+[settings]
+#site to search on stackexchange e.g stackoverflow
+site:
+
+# Number of results(questions matching query)
+number_of_results:
+
+#number of answers for selected question
+number_of_answers:
+
+#sort by (either activity,votes,creation)
+sort_by:
