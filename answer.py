@@ -1,0 +1,99 @@
+import json ,requests,sys , configparser ,textwrap
+from bs4 import BeautifulSoup
+<<<<<<< HEAD
+from prettytable import PrettyTable
+=======
+>>>>>>> f987591082d2245b9ba41a2a28b7e7113b263778
+# variable
+#command line arguments
+intitle = sys.argv[1]
+tags = sys.argv[2]
+#config defaults
+config = configparser.SafeConfigParser()
+config.read("config.txt")
+site = config.get("settings", "site")
+pagesize = config.get("settings", "number_of_results")
+sort_by = config.get("settings", "sort_by")
+
+#stackexchange url
+url ="https://api.stackexchange.com/2.2/"
+
+#api endpoint
+search_url ="{}search?".format(url)
+search_params ={"pagesize": pagesize,"order":"desc","sort":sort_by,"tags":tags, "intitle": intitle,"site":site}
+#retrieving questions that match the query
+<<<<<<< HEAD
+data  = requests.get(search_url, params=search_params).json()
+questions = data["items"]
+print('\033[1m')
+if not questions:
+	print("No questions match your query ,please rephrase your query")
+	quit()
+print("The following are the top {} which meet your query \n".format(pagesize))
+#print top results
+t = PrettyTable(["Option","Title", "Score","Answered"])
+for index,question in enumerate(questions):
+	t.add_row([index+1 ,question["title"],question["score"] ,question["is_answered"] ])
+
+print( t)
+
+
+option = int(input("\nPlease choose an option you prefer \t"))
+if option > int(search_params["pagesize"]):
+	print("invalid option")
+	quit()
+=======
+search_response = requests.get(search_url, params=search_params)
+data = search_response.json()
+questions = data["items"]
+print("The following are the top {} which meet your query \n".format(pagesize))
+#print top results
+i =0
+for question in questions:
+	
+	print("Option" ,i+1 ,question["title"],"       score:",question["score"] ,"       answered ?:",question["is_answered"] ,"\n")
+	i = i + 1
+#choosing correct question from results
+option = int(input("\nPlease choose an option you prefer \t"))
+if option > int(search_params["pagesize"]):
+	print("invalid option")
+	sys.exit()
+>>>>>>> f987591082d2245b9ba41a2a28b7e7113b263778
+#retrieving the answer
+try:
+	answer_url = "{0}/answers/{1}".format(url,questions[option-1]["accepted_answer_id"])
+	answer_params = {"order":"desc","sort":"votes", "site":"stackoverflow","filter":"withbody"}
+	answer_response = requests.get(answer_url, params=answer_params)
+	print("The following is the accepted answer to your question \n\n")
+<<<<<<< HEAD
+
+=======
+	
+>>>>>>> f987591082d2245b9ba41a2a28b7e7113b263778
+except Exception :
+	print("Your question doesn't have an accepted answer yet \n\n This is the top aswer so far \n\n")
+	qstn_id = questions[option-1]["question_id"]
+	surl ="{}questions/{}/answers?".format(url,qstn_id)
+	sparams ={"pagesize": 5,"order":"desc","sort":"votes","site":"stackoverflow","filter":"withbody"}
+	answer_response = requests.get(surl, params=sparams)
+
+finally:
+	#print the answer
+	answer_data = answer_response.json()
+<<<<<<< HEAD
+	answer = answer_data["items"][0]["body"]
+	soup = BeautifulSoup(answer, 'html.parser')
+
+	print('\033[94m' + textwrap.indent(soup.get_text(), '       ')+'\033[0m')
+print('\033[0m')
+=======
+	answer = answer_data["items"]
+	html_doc = answer[0]["body"]
+	soup = BeautifulSoup(html_doc, 'html.parser')
+
+	print(textwrap.indent(soup.get_text(), '       '))	
+
+
+
+
+>>>>>>> f987591082d2245b9ba41a2a28b7e7113b263778
