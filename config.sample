@@ -3,10 +3,17 @@
 site:stackoverflow
 
 # Number of results(questions matching query)
+<<<<<<< HEAD
 number_of_results:2
 
 #number of answers for selected question
 number_of_answers:3
+=======
+number_of_results:7
+
+#number of answers for selected question
+number_of_answers:8
+>>>>>>> f987591082d2245b9ba41a2a28b7e7113b263778
 
 #sort by (either activity,votes,creation)
 sort_by:votes
